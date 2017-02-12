@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm run test:security",
-    "test": "npm-run-all --parallel test:unit test:lint",
+    "start": "babel-node build/server.js",
+    "test": "npm-run-all --parallel test:security test:unit test:lint",
     "test:lint": "esw **/*.js --color",
     "test:lint:watch": "npm run test:lint -- --watch",
     "test:security": "nsp check",
-    "test:unit": "mocha --reporter progress src",
+    "test:unit": "mocha --reporter progress --compilers js:babel-core/register {server,src}/**/*.test.js",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:watch": "npm-run-all --parallel test:security test:unit:watch test:lint:watch"
   },
@@ -29,22 +30,29 @@
     "url": "https://github.com/gerlocian/family-vault/issues"
   },
   "homepage": "https://github.com/gerlocian/family-vault#readme",
-  "devDependencies": {
+  "dependencies": {
     "babel-cli": "^6.22.2",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-polyfill": "^6.22.0",
     "babel-preset-latest": "^6.22.0",
     "babel-register": "^6.22.0",
+    "express": "^4.14.1",
+    "mongodb": "^2.2.22",
+    "morgan": "^1.8.0",
+    "npm-run-all": "^4.0.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
     "css-loader": "^0.26.1",
     "eslint": "^3.15.0",
     "eslint-watch": "^2.1.14",
-    "express": "^4.14.1",
     "localtunnel": "^1.8.2",
     "mocha": "^3.2.0",
-    "npm-run-all": "^4.0.1",
     "nsp": "^2.6.2",
+    "testdouble": "^1.11.1",
+    "testdouble-chai": "^0.5.0",
     "webpack": "^2.2.1"
   }
 }
