@@ -7,10 +7,10 @@
     "pretest": "npm run test:security",
     "start": "babel-node build/server.js",
     "test": "npm-run-all --parallel test:security test:unit test:lint",
-    "test:lint": "esw **/*.js --color",
+    "test:lint": "esw server/**/*.js --color",
     "test:lint:watch": "npm run test:lint -- --watch",
     "test:security": "nsp check",
-    "test:unit": "mocha --reporter progress --compilers js:babel-core/register {server,src}/**/*.test.js",
+    "test:unit": "mocha --reporter progress --compilers js:babel-core/register server/**/*.integration.js",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:watch": "npm-run-all --parallel test:security test:unit:watch test:lint:watch"
   },
@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
     "css-loader": "^0.26.1",
     "eslint": "^3.15.0",
     "eslint-watch": "^2.1.14",
