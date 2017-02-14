@@ -1,5 +1,16 @@
 'use strict';
 
+/*
+    TODO:
+
+     GET	/books          find(query)
+     GET	/books/:id      findOne(query)
+     POST	/books          insertOne(<document>)
+     PUT	/books/:id      updateOne(<query>, <document>)
+     PATCH	/books/:id      updateOne(<query>, <update>)
+     DELETE	/books/:id      deleteOne(<query>)
+ */
+
 import { bookApiLogger as logger } from './../loggers';
 import * as config from './../../config';
 import Model from './../models/model';

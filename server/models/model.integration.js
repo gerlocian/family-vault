@@ -28,15 +28,13 @@ describe('Model', () => {
                 { id: 7, type: 'type3' },
                 { id: 8, type: 'type3' },
                 { id: 9, type: 'type3' },
-            ]).then(() => { db.close(); });
+            ]).then(() => db.close());
         });
     });
 
     afterEach(() => {
         return MongoClient.connect(testUrl).then(db => {
-            return db.collection(testCollection).deleteMany({}).then(() => {
-                db.close();
-            });
+            return db.collection(testCollection).deleteMany({}).then(() => db.close());
         });
     });
 
