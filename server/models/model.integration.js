@@ -245,4 +245,79 @@ describe('Model', () => {
             expect(model.find({ type: 'type1' })).to.eventually.have.length(3).notify(done);
         });
     });
+
+    describe('findOne', () => {
+        it('should exist', () => {
+            expect(model.findOne).to.be.a('function');
+        });
+
+        it('should reject if given a string', (done) => {
+            expect(model.findOne('string')).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a number', (done) => {
+            expect(model.findOne(12345678)).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given an array', (done) => {
+            expect(model.findOne([ 1, 2 ])).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a boolean', (done) => {
+            expect(model.findOne(true)).to.be.rejected.notify(done);
+        });
+
+        it('should find the appropriate documents with a query', (done) => {
+            expect(model.findOne({ type: 'type1' })).to.eventually.have.property('id', 1).notify(done);
+        });
+    });
+
+    describe('replaceOne', () => {
+        it('should exist', () => {
+            expect(model.replaceOne).to.be.a('function');
+        });
+
+        it('should reject if given a string for query', (done) => {
+            expect(model.replaceOne('string')).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a number for query', (done) => {
+            expect(model.replaceOne(12345678)).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given an array for query', (done) => {
+            expect(model.replaceOne([ 1, 2 ])).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a boolean for query', (done) => {
+            expect(model.replaceOne(true)).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a string for document', (done) => {
+            expect(model.replaceOne({}, 'string')).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a number for document', (done) => {
+            expect(model.replaceOne({}, 12345678)).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given an array for document', (done) => {
+            expect(model.replaceOne({}, [ 1, 2 ])).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a boolean for document', (done) => {
+            expect(model.replaceOne({}, true)).to.be.rejected.notify(done);
+        });
+
+        it('should replace the found document with a new document', (done) => {
+            const newDocument = { id: 'x', type: 'type4', randomField: Math.random() };
+
+            model.replaceOne({ id: 1 }, newDocument).then(() => {
+                MongoClient.connect(testUrl).then(db => {
+                    expect(db.collection(testCollection).findOne({ id: 'x' }))
+                        .to.eventually.have.property('randomField', newDocument.randomField).notify(done);
+                });
+            });
+        });
+    });
 });

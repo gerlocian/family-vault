@@ -16,4 +16,5 @@ function createLogger(loggerName) {
 }
 
 export const server = createLogger('server');
-export const api = createLogger('server:api');
+export const bookApiLogger = createLogger('server:api:books');
+export const movieApiLogger = createLogger('server:api:movies');

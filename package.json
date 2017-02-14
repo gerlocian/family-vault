@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm run test:security",
-    "start": "babel-node build/server.js",
+    "start": "babel-node server/server.js",
     "test": "npm-run-all --parallel test:security test:unit test:lint",
     "test:lint": "esw server/**/*.js --color",
     "test:lint:watch": "npm run test:lint -- --watch",
@@ -37,6 +37,7 @@
     "babel-polyfill": "^6.22.0",
     "babel-preset-latest": "^6.22.0",
     "babel-register": "^6.22.0",
+    "body-parser": "^1.16.1",
     "express": "^4.14.1",
     "mongodb": "^2.2.22",
     "morgan": "^1.8.0",

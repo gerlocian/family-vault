@@ -87,6 +87,22 @@ function Model (client, url, collectionName) {
     }
 
     /**
+     * Finds the first instance of a document that matches a given query.
+     * @param query ( Object } The query to use to find the document.
+     * @return { Promise } The promise object created for the document found.
+     */
+    function findOne(query) {
+        if (!isObject(query)) return Promise.reject('You must provide a valid search query.');
+
+        return client.connect(url).then(db => {
+            return db.collection(collectionName).findOne(query).then(response => {
+                db.close();
+                return response;
+            });
+        });
+    }
+
+    /**
      * Inserts a document into the collection.
      * @param document { Object } The document to insert.
      * @return { Promise } The promise object created after the insertion.
@@ -123,13 +139,33 @@ function Model (client, url, collectionName) {
         });
     }
 
+    /**
+     * Replaces a single document with a new document.
+     * @param query { Object } The query to use to determine which document to replace.
+     * @param document { Object } The replacement document.
+     * @return { Promise } The promise created for this transaction.
+     */
+    function replaceOne(query, document) {
+        if (!isObject(query)) return Promise.reject('Query must be an object');
+        if (!isObject(document)) return Promise.reject('Document must be an object');
+
+        return client.connect(url).then(db => {
+            return db.collection(collectionName).replaceOne(query, document).then(response => {
+                db.close();
+                return response;
+            });
+        });
+    }
+
     return {
         count,
         deleteMany,
         deleteOne,
         find,
+        findOne,
         insertOne,
-        insertMany
+        insertMany,
+        replaceOne
     };
 }
 
