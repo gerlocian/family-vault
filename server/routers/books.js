@@ -44,7 +44,7 @@ router.post('/', (req, res) => {
         res.status(201).end();
     }).catch(err => {
         logger.error(err);
-        res.status(500).end('Error occurred inserting book.')
+        res.status(500).end('Error occurred inserting book.');
     });
 });
 
@@ -53,7 +53,7 @@ router.delete('/:id', (req, res) => {
         res.send(response);
     }).catch(err => {
         logger.error(err);
-        res.status(500).end('Error occurred deleting book.')
+        res.status(500).end('Error occurred deleting book.');
     });
 });
 
