@@ -64,7 +64,9 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object generated for the action.
      */
     const processAction = action => {
-        return client.connect(url).then(db => {
+        return client.connect(
+            url
+        ).then(db => {
             const result = action(db);
             return { db, result };
         }).then(results => {
