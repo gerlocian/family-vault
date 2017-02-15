@@ -10,7 +10,7 @@
     "test:lint": "esw server/**/*.js --color",
     "test:lint:watch": "npm run test:lint -- --watch",
     "test:security": "nsp check",
-    "test:unit": "mocha --reporter progress --compilers js:babel-core/register server/**/*.integration.js",
+    "test:unit": "mocha --reporter progress --compilers js:babel-core/register server/**/*.integration.js server/**/*.unit.js",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:watch": "npm-run-all --parallel test:security test:unit:watch test:lint:watch"
   },
@@ -51,6 +51,7 @@
     "eslint": "^3.15.0",
     "eslint-watch": "^2.1.14",
     "localtunnel": "^1.8.2",
+    "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "nsp": "^2.6.2",
     "testdouble": "^1.11.1",

@@ -1,5 +1,8 @@
 'use strict';
 
+import _ from 'lodash';
+import * as assert from './../utils/variableValidation';
+
 /**
  * An abstract class for any data models in the system.
  *
@@ -8,72 +11,26 @@
  * @param collectionName { string } The name of the collection the intended model is to use.
  * @returns { Object } The model object.
  */
-function Model (client, url, collectionName) {
+function MongoConnector (client, url, collectionName) {
 
-    /**
-     * Determines if the provided value is an object.
-     * isObject : Any -> Boolean
-     *
-     * @param value { Object } The value to test.
-     * @return { boolean } Whether or not the value is an object.
-     */
-    function isObject(value) {
-        return typeof value === 'object' && ! Array.isArray(value);
-    }
-
-    /**
-     * Determines if the provided value is an Object with properties.
-     * isPopulatedObject : Any -> Boolean
-     *
-     * @param value { Object } The value to test.
-     * @return { boolean } Whether or not the value is an object.
-     */
-    function isPopulatedObject(value) {
-        return isObject(value) && Object.keys(value).length > 0;
-    }
-
-    /**
-     * Determines if the provided value is an Object or undefined.
-     * isUndefinedOrObject : Any -> Boolean
-     *
-     * @param value { Object } The value to test.
-     * @return { boolean } Whether or not the value is an object or undefined.
-     */
-    function isObjectOrUndefined(value) {
-        return isObject(value) || typeof value === 'undefined';
-    }
-
-    /**
-     * Determines if the passed value is a collection of populated objects.
-     * arePopulatedObjects : Any -> Boolean
-     *
-     * @param value { Array<Object> } The value to test.
-     * @return { boolean } Whether or not the value is a collection of populated objects.
-     */
-    function arePopulatedObjects(value) {
-        return Array.isArray(value)
-            && value.length > 1
-            && value.filter(isPopulatedObject).length === value.length;
-    }
-
-    /**
+   /**
      * Processes actions against the model.
      * processAction : Function -> Promise
      *
      * @param action { Function } The action to perform on the model.
      * @return { Promise } The promise object generated for the action.
      */
-    const processAction = action => {
+    function processAction(action) {
         return client.connect(
             url
         ).then(db => {
             const result = action(db);
             return { db, result };
-        }).then(results => {
-            results.db.close();
-            return results.result;
+        }).then(p => {
+            p.db.close();
+            return p.result;
         });
-    };
+    }
 
     /**
      * Counts the number of documents that match a given query.
@@ -83,7 +40,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created after the count.
      */
     function count(query) {
-        return isObjectOrUndefined(query)
+        return assert.isObjectOrUndefined(query)
             ? processAction(db => db.collection(collectionName).count(query))
             : Promise.reject('count: Provided query must be an object or undefined');
     }
@@ -96,7 +53,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created for the deletion.
      */
     function deleteMany(query) {
-        return isPopulatedObject(query)
+        return assert.isPopulatedObject(query)
             ? processAction(db => db.collection(collectionName).deleteMany(query))
             : Promise.reject('deleteMany: You must provide a valid query for deleteMany.');
     }
@@ -109,7 +66,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created for the deletion.
      */
     function deleteOne(query) {
-        return isPopulatedObject(query)
+        return assert.isPopulatedObject(query)
             ? processAction(db => db.collection(collectionName).deleteOne(query))
             : Promise.reject('deleteOne: You must provide a valid query for deleteOne.');
     }
@@ -122,7 +79,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created for the documents found.
      */
     function find(query) {
-        return isObjectOrUndefined(query)
+        return assert.isObjectOrUndefined(query)
             ? processAction(db => db.collection(collectionName).find(query).toArray())
             : Promise.reject('find: You must provide a valid search query.');
     }
@@ -135,7 +92,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created for the document found.
      */
     function findOne(query) {
-        return isObjectOrUndefined(query)
+        return assert.isObjectOrUndefined(query)
             ? processAction(db => db.collection(collectionName).findOne(query))
             : Promise.reject('findOne: You must provide a valid search query.');
     }
@@ -148,7 +105,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created after the insertion.
      */
     function insertOne(document) {
-        return isPopulatedObject(document)
+        return assert.isPopulatedObject(document)
             ? processAction(db => db.collection(collectionName).insertOne(document))
             : Promise.reject('insertOne: Document must be an object');
     }
@@ -161,7 +118,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise object created after the insertions.
      */
     function insertMany(documents) {
-        return arePopulatedObjects(documents)
+        return assert.arePopulatedObjects(documents)
             ? processAction(db => db.collection(collectionName).insertMany(documents))
             : Promise.reject('insertMany: All documents in the array must be objects.');
     }
@@ -175,7 +132,7 @@ function Model (client, url, collectionName) {
      * @return { Promise } The promise created for this transaction.
      */
     function replaceOne(query, document) {
-        return isPopulatedObject(query) && isPopulatedObject(document)
+        return assert.isPopulatedObject(query) && assert.isPopulatedObject(document)
             ? processAction(db => db.collection(collectionName).replaceOne(query, document))
             : Promise.reject('replaceOne: Query and Document must be populated objects');
     }
@@ -192,4 +149,4 @@ function Model (client, url, collectionName) {
     };
 }
 
-export default Model;
+export default _.curry(MongoConnector);

@@ -9,7 +9,7 @@ import morgan from 'morgan';
 logger.profile('server build time');
 logger.debug('importing routes');
 
-import booksApi from './routers/books';
+//import booksApi from './routers/books';
 
 logger.debug('imports complete. building app..');
 
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 logger.debug('middleware complete. building routers...');
 
-app.use('/api/books', booksApi);
+//app.use('/api/books', booksApi);
 //app.use('/api/movies', moviesApi);
 
 logger.debug('routers complete. starting server...');
