@@ -15,7 +15,18 @@ import { isObject, isPopulatedObject, isObjectOrUndefined, arePopulatedObjects }
 const runTests = (func, trueTests) => {
     const tests = Object.assign({}, {
         noValue: false,
-        emptyObject: false
+        emptyObject: false,
+        populatedObject: false,
+        emptyArray: false,
+        oneValueArrayNoObject: false,
+        manyValueArrayNoObject: false,
+        oneValueArrayWithEmptyObject: false,
+        manyValueArrayWithEmptyObject: false,
+        oneValueArrayWithPopulatedObject: false,
+        manyValueArrayWithPopulatedObject: false,
+        number: false,
+        string: false,
+        boolean: false
     }, trueTests);
 
     describe(func.name, () => {
@@ -35,234 +46,91 @@ const runTests = (func, trueTests) => {
                 : expect(func({})).to.be.false;
         });
 
-        it('should return false for a populated object', () => {
-            expect(arePopulatedObjects({ a:1 })).to.be.false;
+        it(`should return ${tests.populatedObject} for a populated object`, () => {
+            tests.populatedObject
+                ? expect(func({ a:1 })).to.be.true
+                : expect(func({ a:1 })).to.be.false;
         });
 
-        it('should return false for an empty array', () => {
-            expect(arePopulatedObjects([])).to.be.false;
+        it(`should return ${tests.emptyArray} for an empty array`, () => {
+            tests.emptyArray
+                ? expect(func([])).to.be.true
+                : expect(func([])).to.be.false;
         });
 
-        it('should return false for a populated array of one value (no object)', () => {
-            expect(arePopulatedObjects([ 1 ])).to.be.false;
+        it(`should return ${tests.oneValueArrayNoObject} for a populated array of one value (no object)`, () => {
+            tests.oneValueArrayNoObject
+                ? expect(func([ 1 ])).to.be.true
+                : expect(func([ 1 ])).to.be.false;
         });
 
-        it('should return false for a populated array with more than 1 value (no objects)', () => {
-            expect(arePopulatedObjects([ 1, 2, 3 ])).to.be.false;
+        it(`should return ${tests.manyValueArrayNoObject} for a populated array with more than 1 value (no objects)`, () => {
+            tests.manyValueArrayNoObject
+                ? expect(func([ 1, 2, 3 ])).to.be.true
+                : expect(func([ 1, 2, 3 ])).to.be.false;
         });
 
-        it('should return false for a populated array of one value (object)', () => {
-            expect(arePopulatedObjects([ {} ])).to.be.false;
+        it(`should return ${tests.oneValueArrayWithEmptyObject} for a populated array of one value (object)`, () => {
+            tests.oneValueArrayWithEmptyObject
+                ? expect(func([ {} ])).to.be.true
+                : expect(func([ {} ])).to.be.false;
         });
 
-        it('should return false for a populated array with more than 1 value (objects)', () => {
-            expect(arePopulatedObjects([ {}, {}, {} ])).to.be.false;
+        it(`should return ${tests.manyValueArrayWithEmptyObject} for a populated array with more than 1 value (objects)`, () => {
+            tests.manyValueArrayWithEmptyObject
+                ? expect(func([ {}, {}, {} ])).to.be.true
+                : expect(func([ {}, {}, {} ])).to.be.false;
         });
 
-        it('should return false for a populated array of one value ( populated object)', () => {
-            expect(arePopulatedObjects([ { a:1 } ])).to.be.false;
+        it(`should return ${tests.oneValueArrayWithPopulatedObject} for a populated array of one value ( populated object)`, () => {
+            tests.oneValueArrayWithPopulatedObject
+                ? expect(func([ { a:1 } ])).to.be.true
+                : expect(func([ { a:1 } ])).to.be.false;
         });
 
-        it('should return true for a populated array with more than 1 value (populated objects)', () => {
-            expect(arePopulatedObjects([ { a:1 }, { b:2 }, { c:3 } ])).to.be.true;
+        it(`should return ${tests.manyValueArrayWithPopulatedObject} for a populated array with more than 1 value (populated objects)`, () => {
+            tests.manyValueArrayWithPopulatedObject
+                ? expect(func([ { a:1 }, { b:2 }, { c:3 } ])).to.be.true
+                : expect(func([ { a:1 }, { b:2 }, { c:3 } ])).to.be.false;
         });
 
-        it('should return false for a number', () => {
-            expect(arePopulatedObjects(1)).to.be.false;
+        it(`should return ${tests.number} for a number`, () => {
+            tests.number
+                ? expect(func(1)).to.be.true
+                : expect(func(1)).to.be.false;
         });
 
-        it('should return false for a string', () => {
-            expect(arePopulatedObjects('a')).to.be.false;
+        it(`should return ${tests.string} for a string`, () => {
+            tests.string
+                ? expect(func('a')).to.be.true
+                : expect(func('a')).to.be.false;
         });
 
-        it('should return false for a boolean', () => {
-            expect(arePopulatedObjects(true)).to.be.false;
+        it(`should return ${tests.boolean} for a boolean`, () => {
+            tests.boolean
+                ? expect(func(true)).to.be.true
+                : expect(func(true)).to.be.false;
         });
     });
 };
 
-describe('isObject', () => {
-    it('should exist', () => {
-        expect(isObject).to.be.a('function');
-    });
-
-    it('should return false for no value or undefined', () => {
-        expect(isObject()).to.be.false;
-    });
-
-    it('should return true for an empty object', () => {
-        expect(isObject({})).to.be.true;
-    });
-
-    it('should return true for a populated object', () => {
-        expect(isObject({ a:1 })).to.be.true;
-    });
-
-    it('should return false for an empty array', () => {
-        expect(isObject([])).to.be.false;
-    });
-
-    it('should return false for a populated array', () => {
-        expect(isObject([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a populated array with more than 1 value', () => {
-        expect(isObject([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a number', () => {
-        expect(isObject(1)).to.be.false;
-    });
-
-    it('should return false for a string', () => {
-        expect(isObject('a')).to.be.false;
-    });
-
-    it('should return false for a boolean', () => {
-        expect(isObject(true)).to.be.false;
-    });
+runTests(isObject, {
+    emptyObject: true,
+    populatedObject: true
 });
 
-describe('isPopulatedObject', () => {
-    it('should exist', () => {
-        expect(isPopulatedObject).to.be.a('function');
-    });
-
-    it('should return false for no value or undefined', () => {
-        expect(isPopulatedObject()).to.be.false;
-    });
-
-    it('should return false for an empty object', () => {
-        expect(isPopulatedObject({})).to.be.false;
-    });
-
-    it('should return true for a populated object', () => {
-        expect(isPopulatedObject({ a:1 })).to.be.true;
-    });
-
-    it('should return false for an empty array', () => {
-        expect(isPopulatedObject([])).to.be.false;
-    });
-
-    it('should return false for a populated array', () => {
-        expect(isPopulatedObject([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a populated array with more than 1 value', () => {
-        expect(isPopulatedObject([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a number', () => {
-        expect(isPopulatedObject(1)).to.be.false;
-    });
-
-    it('should return false for a string', () => {
-        expect(isPopulatedObject('a')).to.be.false;
-    });
-
-    it('should return false for a boolean', () => {
-        expect(isPopulatedObject(true)).to.be.false;
-    });
+runTests(isPopulatedObject, {
+    populatedObject: true
 });
 
-describe('isObjectOrUndefined', () => {
-    it('should exist', () => {
-        expect(isObjectOrUndefined).to.be.a('function');
-    });
-
-    it('should return true for no value or undefined', () => {
-        expect(isObjectOrUndefined()).to.be.true;
-    });
-
-    it('should return true for an empty object', () => {
-        expect(isObjectOrUndefined({})).to.be.true;
-    });
-
-    it('should return true for a populated object', () => {
-        expect(isObjectOrUndefined({ a:1 })).to.be.true;
-    });
-
-    it('should return false for an empty array', () => {
-        expect(isObjectOrUndefined([])).to.be.false;
-    });
-
-    it('should return false for a populated array', () => {
-        expect(isObjectOrUndefined([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a populated array with more than 1 value', () => {
-        expect(isObjectOrUndefined([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a number', () => {
-        expect(isObjectOrUndefined(1)).to.be.false;
-    });
-
-    it('should return false for a string', () => {
-        expect(isObjectOrUndefined('a')).to.be.false;
-    });
-
-    it('should return false for a boolean', () => {
-        expect(isObjectOrUndefined(true)).to.be.false;
-    });
+runTests(isObjectOrUndefined, {
+    noValue: true,
+    emptyObject: true,
+    populatedObject: true
 });
 
-describe('arePopulatedObjects', () => {
-    it('should exist', () => {
-        expect(arePopulatedObjects).to.be.a('function');
-    });
-
-    it('should return false for no value or undefined', () => {
-        expect(arePopulatedObjects()).to.be.false;
-    });
-
-    it('should return false for an empty object', () => {
-        expect(arePopulatedObjects({})).to.be.false;
-    });
-
-    it('should return false for a populated object', () => {
-        expect(arePopulatedObjects({ a:1 })).to.be.false;
-    });
-
-    it('should return false for an empty array', () => {
-        expect(arePopulatedObjects([])).to.be.false;
-    });
-
-    it('should return false for a populated array of one value (no object)', () => {
-        expect(arePopulatedObjects([ 1 ])).to.be.false;
-    });
-
-    it('should return false for a populated array with more than 1 value (no objects)', () => {
-        expect(arePopulatedObjects([ 1, 2, 3 ])).to.be.false;
-    });
-
-    it('should return false for a populated array of one value (object)', () => {
-        expect(arePopulatedObjects([ {} ])).to.be.false;
-    });
-
-    it('should return false for a populated array with more than 1 value (objects)', () => {
-        expect(arePopulatedObjects([ {}, {}, {} ])).to.be.false;
-    });
-
-    it('should return false for a populated array of one value ( populated object)', () => {
-        expect(arePopulatedObjects([ { a:1 } ])).to.be.false;
-    });
-
-    it('should return true for a populated array with more than 1 value (populated objects)', () => {
-        expect(arePopulatedObjects([ { a:1 }, { b:2 }, { c:3 } ])).to.be.true;
-    });
-
-    it('should return false for a number', () => {
-        expect(arePopulatedObjects(1)).to.be.false;
-    });
-
-    it('should return false for a string', () => {
-        expect(arePopulatedObjects('a')).to.be.false;
-    });
-
-    it('should return false for a boolean', () => {
-        expect(arePopulatedObjects(true)).to.be.false;
-    });
+runTests(arePopulatedObjects, {
+    manyValueArrayWithPopulatedObject: true
 });
 
 
