@@ -1,0 +1,22 @@
+{
+  "title": {
+    "description": "The title of the book",
+    "type": "string",
+    "required": true
+  },
+  "author": {
+    "description": "The author of the book",
+    "type": "string",
+    "required": true
+  },
+  "pages": {
+    "description": "The number of pages in the book",
+    "type": "number",
+    "required": false
+  },
+  "description": {
+    "description": "A description of the book",
+    "type": "string",
+    "required": false
+  }
+}

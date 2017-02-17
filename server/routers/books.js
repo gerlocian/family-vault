@@ -10,7 +10,3 @@
      PATCH	/books/:id      updateOne(<query>, <update>)
      DELETE	/books/:id      deleteOne(<query>)
  */
-
-/**
- *
- */

@@ -1,5 +1,26 @@
 'use strict';
 
+import curry from 'lodash/curry';
+
+/**
+ * Determines if the provided value is of the provided type.
+ * isType : String -> Any -> Boolean
+ *
+ * @param type { String } The type to test against.
+ * @param value { Any } The value to test against the type.
+ * @return { boolean } Whether the value has the provided type.
+ */
+export const isType = curry((type, value) => typeof value === type);
+
+/**
+ * Deteremines if the provided value is undefined.
+ * isUndefined : Any -> Boolean
+ *
+ * @param value { Undefined } The value to test.
+ * @return { boolean } Whether or not the value is undefined.
+ */
+export const isUndefined = value => isType('undefined', value);
+
 /**
  * Determines if the provided value is an object.
  * isObject : Any -> Boolean
@@ -7,7 +28,7 @@
  * @param value { Object } The value to test.
  * @return { boolean } Whether or not the value is an object.
  */
-export const isObject = value => typeof value === 'object' && ! Array.isArray(value);
+export const isObject = value => isType('object', value) && ! Array.isArray(value);
 
 /**
  * Determines if the provided value is an Object with properties.
@@ -25,7 +46,7 @@ export const isPopulatedObject = value => isObject(value) && Object.keys(value).
  * @param value { Object } The value to test.
  * @return { boolean } Whether or not the value is an object or undefined.
  */
-export const isObjectOrUndefined = value => isObject(value) || typeof value === 'undefined';
+export const isObjectOrUndefined = value => isObject(value) || isUndefined(value);
 
 /**
  * Determines if the passed value is a collection of populated objects.

@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import curry from 'lodash/curry';
 import * as assert from './../utils/variableValidation';
 
 /**
@@ -11,7 +11,7 @@ import * as assert from './../utils/variableValidation';
  * @param collectionName { string } The name of the collection the intended model is to use.
  * @returns { Object } The model object.
  */
-function MongoConnector(client, url, collectionName) {
+function MongoConnector(client, url, collectionName, model) {
 
     /**
      * Processes actions against the model.
@@ -30,6 +30,19 @@ function MongoConnector(client, url, collectionName) {
             p.db.close();
             return p.result;
         });
+    }
+
+    /**
+     * Validates the provided document against the model given to the factory.
+     * validateDocument : Model => Document => Boolean
+     *
+     * @param document { Object } The document to test.
+     * @return { Boolean } The result of the test (true or false).
+     */
+    function isValidDocument(document) {
+        if (! model) throw Error('Connector factory was not provided a model.');
+
+        Object.keys()
     }
 
     /**
@@ -105,7 +118,7 @@ function MongoConnector(client, url, collectionName) {
      * @return { Promise } The promise object created after the insertion.
      */
     function insertOne(document) {
-        return assert.isPopulatedObject(document)
+        return isValidDocument(document) && assert.isPopulatedObject(document)
             ? processAction(db => db.collection(collectionName).insertOne(document))
             : Promise.reject('insertOne: Document must be an object');
     }
@@ -149,4 +162,4 @@ function MongoConnector(client, url, collectionName) {
     };
 }
 
-export default _.curry(MongoConnector);
+export default curry(MongoConnector);

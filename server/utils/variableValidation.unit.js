@@ -1,11 +1,7 @@
 'use strict';
 
 import { expect } from 'chai';
-import { isObject, isPopulatedObject, isObjectOrUndefined, arePopulatedObjects }
-    from './variableValidation';
-
-
-// TODO Complete me.
+import * as assert from './variableValidation';
 
 /**
  * Tests a given function against the requested tests.
@@ -88,22 +84,45 @@ const runTests = (func, trueTests) => {
     });
 };
 
-runTests(isObject, {
+describe('isType', () => {
+    it('should exist', () => {
+        expect(assert.isType).to.be.a('function');
+    });
+
+    it('should correctly detect if the value is a provided type', () => {
+        expect(assert.isType('string', 'hello')).to.be.true;
+        expect(assert.isType('string', 1)).to.be.false;
+        expect(assert.isType('number', 1)).to.be.true;
+        expect(assert.isType('number', 0.25)).to.be.true;
+        expect(assert.isType('number', 'hello')).to.be.false;
+        expect(assert.isType('object', {})).to.be.true;
+        expect(assert.isType('object', {a: 1})).to.be.true;
+        expect(assert.isType('object', 1)).to.be.false;
+        expect(assert.isType('string')('hello')).to.be.true;
+        expect(assert.isType('string')(1)).to.be.false;
+    });
+});
+
+runTests(assert.isUndefined, {
+    noValue: true
+});
+
+runTests(assert.isObject, {
     emptyObject: true,
     populatedObject: true
 });
 
-runTests(isPopulatedObject, {
+runTests(assert.isPopulatedObject, {
     populatedObject: true
 });
 
-runTests(isObjectOrUndefined, {
+runTests(assert.isObjectOrUndefined, {
     noValue: true,
     emptyObject: true,
     populatedObject: true
 });
 
-runTests(arePopulatedObjects, {
+runTests(assert.arePopulatedObjects, {
     manyValueArrayWithPopulatedObject: true
 });
 
