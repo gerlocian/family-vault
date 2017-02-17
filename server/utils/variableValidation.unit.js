@@ -35,81 +35,55 @@ const runTests = (func, trueTests) => {
         });
 
         it(`should return ${tests.noValue} for no value or undefined`, () => {
-            tests.noValue
-                ? expect(func()).to.be.true
-                : expect(func()).to.be.false;
+            expect(func()).to.equal(tests.noValue);
         });
 
         it(`should return ${tests.emptyObject} for an empty object`, () => {
-            tests.emptyObject
-                ? expect(func({})).to.be.true
-                : expect(func({})).to.be.false;
+            expect(func({})).to.equal(tests.emptyObject);
         });
 
         it(`should return ${tests.populatedObject} for a populated object`, () => {
-            tests.populatedObject
-                ? expect(func({ a:1 })).to.be.true
-                : expect(func({ a:1 })).to.be.false;
+            expect(func({ a:1 })).to.equal(tests.populatedObject);
         });
 
         it(`should return ${tests.emptyArray} for an empty array`, () => {
-            tests.emptyArray
-                ? expect(func([])).to.be.true
-                : expect(func([])).to.be.false;
+            expect(func([])).to.equal(tests.emptyArray);
         });
 
         it(`should return ${tests.oneValueArrayNoObject} for a populated array of one value (no object)`, () => {
-            tests.oneValueArrayNoObject
-                ? expect(func([ 1 ])).to.be.true
-                : expect(func([ 1 ])).to.be.false;
+            expect(func([ 1 ])).to.equal(tests.oneValueArrayNoObject);
         });
 
         it(`should return ${tests.manyValueArrayNoObject} for a populated array with more than 1 value (no objects)`, () => {
-            tests.manyValueArrayNoObject
-                ? expect(func([ 1, 2, 3 ])).to.be.true
-                : expect(func([ 1, 2, 3 ])).to.be.false;
+            expect(func([ 1, 2, 3 ])).to.equal(tests.manyValueArrayNoObject);
         });
 
         it(`should return ${tests.oneValueArrayWithEmptyObject} for a populated array of one value (object)`, () => {
-            tests.oneValueArrayWithEmptyObject
-                ? expect(func([ {} ])).to.be.true
-                : expect(func([ {} ])).to.be.false;
+            expect(func([ {} ])).to.equal(tests.oneValueArrayWithEmptyObject);
         });
 
         it(`should return ${tests.manyValueArrayWithEmptyObject} for a populated array with more than 1 value (objects)`, () => {
-            tests.manyValueArrayWithEmptyObject
-                ? expect(func([ {}, {}, {} ])).to.be.true
-                : expect(func([ {}, {}, {} ])).to.be.false;
+            expect(func([ {}, {}, {} ])).to.equal(tests.manyValueArrayWithEmptyObject);
         });
 
         it(`should return ${tests.oneValueArrayWithPopulatedObject} for a populated array of one value ( populated object)`, () => {
-            tests.oneValueArrayWithPopulatedObject
-                ? expect(func([ { a:1 } ])).to.be.true
-                : expect(func([ { a:1 } ])).to.be.false;
+            expect(func([ { a:1 } ])).to.equal(tests.oneValueArrayWithPopulatedObject);
         });
 
         it(`should return ${tests.manyValueArrayWithPopulatedObject} for a populated array with more than 1 value (populated objects)`, () => {
-            tests.manyValueArrayWithPopulatedObject
-                ? expect(func([ { a:1 }, { b:2 }, { c:3 } ])).to.be.true
-                : expect(func([ { a:1 }, { b:2 }, { c:3 } ])).to.be.false;
+            expect(func([ { a:1 }, { b:2 }, { c:3 } ])).to.equal(tests.manyValueArrayWithPopulatedObject);
         });
 
         it(`should return ${tests.number} for a number`, () => {
-            tests.number
-                ? expect(func(1)).to.be.true
-                : expect(func(1)).to.be.false;
+            expect(func(1)).to.equal(tests.number);
         });
 
         it(`should return ${tests.string} for a string`, () => {
-            tests.string
-                ? expect(func('a')).to.be.true
-                : expect(func('a')).to.be.false;
+            expect(func('a')).to.equal(tests.string);
         });
 
         it(`should return ${tests.boolean} for a boolean`, () => {
-            tests.boolean
-                ? expect(func(true)).to.be.true
-                : expect(func(true)).to.be.false;
+            expect(func(true)).to.equal(tests.boolean);
         });
     });
 };
