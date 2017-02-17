@@ -11,9 +11,9 @@ import * as assert from './../utils/variableValidation';
  * @param collectionName { string } The name of the collection the intended model is to use.
  * @returns { Object } The model object.
  */
-function MongoConnector (client, url, collectionName) {
+function MongoConnector(client, url, collectionName) {
 
-   /**
+    /**
      * Processes actions against the model.
      * processAction : Function -> Promise
      *
@@ -25,7 +25,7 @@ function MongoConnector (client, url, collectionName) {
             url
         ).then(db => {
             const result = action(db);
-            return { db, result };
+            return {db, result};
         }).then(p => {
             p.db.close();
             return p.result;
