@@ -31,7 +31,8 @@ export const isUndefined = value => isType('undefined', value);
 export const isEmpty = value => {
     return isUndefined(value)
         ||  value === null
-        || (isType('string', value) && value.trim() === '');
+        || (isType('string', value) && value.trim() === '')
+        || (isType('array', value) && value.length === 0);
 };
 
 /**

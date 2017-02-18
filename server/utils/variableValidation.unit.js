@@ -116,7 +116,8 @@ runTests(assert.isUndefined, {
 
 runTests(assert.isEmpty, {
     noValue: true,
-    blankString: true
+    blankString: true,
+    emptyArray: true
 });
 
 runTests(assert.isObject, {

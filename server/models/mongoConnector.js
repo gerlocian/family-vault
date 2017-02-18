@@ -130,9 +130,13 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise object created after the insertion.
      */
     function insertOne(document) {
-        return assert.isPopulatedObject(document) && isValidDocument(document)
-            ? processAction(db => db.collection(collectionName).insertOne(document))
-            : Promise.reject('insertOne: Document must be an object that matches the model');
+        if (! assert.isPopulatedObject(document))
+            return Promise.reject('insertOne: Document is not a populated object.');
+
+        if (! isValidDocument(document))
+            return Promise.reject('insertOne: The document is not in the correct form.');
+
+        return processAction(db => db.collection(collectionName).insertOne(document));
     }
 
     /**
@@ -143,9 +147,13 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise object created after the insertions.
      */
     function insertMany(documents) {
-        return assert.arePopulatedObjects(documents) && documents.every(isValidDocument)
-            ? processAction(db => db.collection(collectionName).insertMany(documents))
-            : Promise.reject('insertMany: All documents in the array must be objects that match the model');
+        if (! assert.arePopulatedObjects(documents))
+            return Promise.reject('insertMany: All documents in the array must be populated objects');
+
+        if (! documents.every(isValidDocument))
+            return Promise.reject('insertMany: Not all documents match the model');
+
+        return processAction(db => db.collection(collectionName).insertMany(documents));
     }
 
     /**
@@ -157,9 +165,13 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise created for this transaction.
      */
     function replaceOne(query, document) {
-        return assert.isPopulatedObject(query) && assert.isPopulatedObject(document)
-            ? processAction(db => db.collection(collectionName).replaceOne(query, document))
-            : Promise.reject('replaceOne: Query and Document must be populated objects');
+        if (! assert.isPopulatedObject(query) || ! assert.isPopulatedObject(document))
+            return Promise.reject('replaceOne: Query or document not a populated object');
+
+        if (! isValidDocument(document))
+            return Promise.reject('replaceOne: Document does not match the model');
+
+        return processAction(db => db.collection(collectionName).replaceOne(query, document));
     }
 
     return {
