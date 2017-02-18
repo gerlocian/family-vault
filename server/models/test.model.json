@@ -1,0 +1,20 @@
+[
+  {
+    "name": "type",
+    "type": "string",
+    "required": true,
+    "description": "A test field. Type"
+  },
+  {
+    "name": "id",
+    "type": "number",
+    "required": true,
+    "description": "A test field. Description"
+  },
+  {
+    "name": "name",
+    "type": "string",
+    "required": false,
+    "description":"A test field. Name"
+  }
+]
