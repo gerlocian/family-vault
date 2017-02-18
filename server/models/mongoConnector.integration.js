@@ -11,14 +11,20 @@ chai.use(chaiAsPromised);
 describe('MongoConnector', () => {
     const testUrl = 'mongodb://localhost:27017/testdatabase';
     const testCollection = 'testcollection';
-    const model = {
-        type: {
-            description: 'a test parameter',
+    const model = [
+        {
+            name: 'type',
+            description: 'a test field',
             type: 'string',
             required: true
         },
-
-    };
+        {
+            name: 'id',
+            description: 'another test field',
+            type: 'number',
+            required: false
+        }
+    ];
 
     let mongoConnector;
     let database;
@@ -121,36 +127,40 @@ describe('MongoConnector', () => {
             expect(mongoConnector.insertOne({ a:1 })).to.be.rejected.notify(done);
         });
 
-        xit('should insert a document into the database', (done) => {
+        it('should test that the document fields are all there and the correct types', (done) => {
+            expect(mongoConnector.insertOne({ type: 1 })).to.be.rejected.notify(done);
+        });
+
+        it('should insert a document into the database', (done) => {
             mongoConnector.insertOne({ id: 11, type: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(10).notify(done);
-            });
+            }).catch(err => done(new Error(err)));
         });
     });
 
-    xdescribe('insertMany', () => {
-        xit('should exist', () => {
+    describe('insertMany', () => {
+        it('should exist', () => {
             expect(mongoConnector.insertMany).to.be.a('function');
         });
 
-        xit('should reject if given an object', (done) => {
+        it('should reject if given an object', (done) => {
             expect(mongoConnector.insertMany({ a:1 })).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a string', (done) => {
+        it('should reject if given a string', (done) => {
             expect(mongoConnector.insertMany('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number', (done) => {
+        it('should reject if given a number', (done) => {
             expect(mongoConnector.insertMany(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean', (done) => {
+        it('should reject if given a boolean', (done) => {
             expect(mongoConnector.insertMany(true)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array with non-objects', (done) => {
+        it('should reject if given an array with non-objects', (done) => {
             const docs = [
                 { id: 10, type: 'type1' },
                 { id: 11, type: 'type1' },
@@ -159,12 +169,23 @@ describe('MongoConnector', () => {
             expect(mongoConnector.insertMany(docs)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a collection of one document', (done) => {
-            const docs = [ { a: 1 } ];
-            expect(mongoConnector.insertMany(docs)).to.be.rejected.notify(done);
+        it('should reject if given a collection of one document', (done) => {
+            expect(mongoConnector.insertMany([{ a:1 }])).to.be.rejected.notify(done);
         });
 
-        xit('should insert many records into the database', (done) => {
+        it('should validate the provided documents against the model given to the factory', (done) => {
+            expect(mongoConnector.insertMany([
+                { a:1 }, { a:2 }, { a:3 }
+            ])).to.be.rejected.notify(done);
+        });
+
+        it('should test that the document fields are all there and the correct types', (done) => {
+            expect(mongoConnector.insertMany([
+                { type: 1 }, { type: true }, { type: 'hello' }
+            ])).to.be.rejected.notify(done);
+        });
+
+        it('should insert many records into the database', (done) => {
             mongoConnector.insertMany([
                 { id: 10, type: 'type1' },
                 { id: 11, type: 'type1' },
@@ -176,28 +197,28 @@ describe('MongoConnector', () => {
         });
     });
 
-    xdescribe('deleteMany', () => {
-        xit('should exist', () => {
+    describe('deleteMany', () => {
+        it('should exist', () => {
             expect(mongoConnector.deleteMany).to.be.a('function');
         });
 
-        xit('should reject if given a string', (done) => {
+        it('should reject if given a string', (done) => {
             expect(mongoConnector.deleteMany('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number', (done) => {
+        it('should reject if given a number', (done) => {
             expect(mongoConnector.deleteMany(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array', (done) => {
+        it('should reject if given an array', (done) => {
             expect(mongoConnector.deleteMany([ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean', (done) => {
+        it('should reject if given a boolean', (done) => {
             expect(mongoConnector.deleteMany(true)).to.be.rejected.notify(done);
         });
 
-        xit('should delete the appropriate documents with a query', (done) => {
+        it('should delete the appropriate documents with a query', (done) => {
             mongoConnector.deleteMany({ type: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(6).notify(done);
@@ -205,28 +226,28 @@ describe('MongoConnector', () => {
         });
     });
 
-    xdescribe('deleteOne', () => {
-        xit('should exist', () => {
+    describe('deleteOne', () => {
+        it('should exist', () => {
             expect(mongoConnector.deleteOne).to.be.a('function');
         });
 
-        xit('should reject if given a string', (done) => {
+        it('should reject if given a string', (done) => {
             expect(mongoConnector.deleteOne('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number', (done) => {
+        it('should reject if given a number', (done) => {
             expect(mongoConnector.deleteOne(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array', (done) => {
+        it('should reject if given an array', (done) => {
             expect(mongoConnector.deleteOne([ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean', (done) => {
+        it('should reject if given a boolean', (done) => {
             expect(mongoConnector.deleteOne(true)).to.be.rejected.notify(done);
         });
 
-        xit('should delete the appropriate documents with a query', (done) => {
+        it('should delete the appropriate documents with a query', (done) => {
             mongoConnector.deleteOne({ type: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(8).notify(done);
@@ -234,97 +255,105 @@ describe('MongoConnector', () => {
         });
     });
 
-    xdescribe('find', () => {
-        xit('should exist', () => {
+    describe('find', () => {
+        it('should exist', () => {
             expect(mongoConnector.find).to.be.a('function');
         });
 
-        xit('should reject if given a string', (done) => {
+        it('should reject if given a string', (done) => {
             expect(mongoConnector.find('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number', (done) => {
+        it('should reject if given a number', (done) => {
             expect(mongoConnector.find(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array', (done) => {
+        it('should reject if given an array', (done) => {
             expect(mongoConnector.find([ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean', (done) => {
+        it('should reject if given a boolean', (done) => {
             expect(mongoConnector.find(true)).to.be.rejected.notify(done);
         });
 
-        xit('should find the appropriate documents with a query', (done) => {
+        it('should find the appropriate documents with a query', (done) => {
             expect(mongoConnector.find({ type: 'type1' })).to.eventually.have.length(3).notify(done);
         });
     });
 
-    xdescribe('findOne', () => {
-        xit('should exist', () => {
+    describe('findOne', () => {
+        it('should exist', () => {
             expect(mongoConnector.findOne).to.be.a('function');
         });
 
-        xit('should reject if given a string', (done) => {
+        it('should reject if given a string', (done) => {
             expect(mongoConnector.findOne('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number', (done) => {
+        it('should reject if given a number', (done) => {
             expect(mongoConnector.findOne(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array', (done) => {
+        it('should reject if given an array', (done) => {
             expect(mongoConnector.findOne([ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean', (done) => {
+        it('should reject if given a boolean', (done) => {
             expect(mongoConnector.findOne(true)).to.be.rejected.notify(done);
         });
 
-        xit('should find the appropriate documents with a query', (done) => {
+        it('should find the appropriate documents with a query', (done) => {
             expect(mongoConnector.findOne({ type: 'type1' }))
                 .to.eventually.have.property('id', 1).notify(done);
         });
     });
 
-    xdescribe('replaceOne', () => {
-        xit('should exist', () => {
+    describe('replaceOne', () => {
+        it('should exist', () => {
             expect(mongoConnector.replaceOne).to.be.a('function');
         });
 
-        xit('should reject if given a string for query', (done) => {
+        it('should reject if given a string for query', (done) => {
             expect(mongoConnector.replaceOne('string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number for query', (done) => {
+        it('should reject if given a number for query', (done) => {
             expect(mongoConnector.replaceOne(12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array for query', (done) => {
+        it('should reject if given an array for query', (done) => {
             expect(mongoConnector.replaceOne([ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean for query', (done) => {
+        it('should reject if given a boolean for query', (done) => {
             expect(mongoConnector.replaceOne(true)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a string for document', (done) => {
+        it('should reject if given a string for document', (done) => {
             expect(mongoConnector.replaceOne({}, 'string')).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a number for document', (done) => {
+        it('should reject if given a number for document', (done) => {
             expect(mongoConnector.replaceOne({}, 12345678)).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given an array for document', (done) => {
+        it('should reject if given an array for document', (done) => {
             expect(mongoConnector.replaceOne({}, [ 1, 2 ])).to.be.rejected.notify(done);
         });
 
-        xit('should reject if given a boolean for document', (done) => {
+        it('should reject if given a boolean for document', (done) => {
             expect(mongoConnector.replaceOne({}, true)).to.be.rejected.notify(done);
         });
 
-        xit('should replace the found document with a new document', (done) => {
+        it('should validate the provided document against the model given to the factory', (done) => {
+            expect(mongoConnector.replaceOne({ a:1 })).to.be.rejected.notify(done);
+        });
+
+        it('should test that the document fields are all there and the correct types', (done) => {
+            expect(mongoConnector.replaceOne({ type: 1 })).to.be.rejected.notify(done);
+        });
+
+        it('should replace the found document with a new document', (done) => {
             const newDocument = { id: 'x', type: 'type4', randomField: Math.random() };
 
             mongoConnector.replaceOne({ id: 1 }, newDocument).then(() => {

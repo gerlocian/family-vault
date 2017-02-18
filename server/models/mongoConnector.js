@@ -33,6 +33,19 @@ function MongoConnector(client, url, collectionName, model) {
     }
 
     /**
+     * Validates a particular field against the model for that field.
+     * isValidField : Object => Object => Boolean
+     *
+     * @param model { Deconstructed: { name, type, required }} The field from the model to use as basis for testing.
+     * @param field { Object } The field to test for validity.
+     * @return { Boolean } The result of the test {true or false}.
+     */
+    function isValidField({type, required}, field) {
+        return (assert.isUndefined(field) || assert.isType(type, field))
+            && ! (required && assert.isEmpty(field));
+    }
+
+    /**
      * Validates the provided document against the model given to the factory.
      * validateDocument : Model => Document => Boolean
      *
@@ -41,8 +54,7 @@ function MongoConnector(client, url, collectionName, model) {
      */
     function isValidDocument(document) {
         if (! model) throw Error('Connector factory was not provided a model.');
-
-        Object.keys()
+        return model.every(mField => isValidField(mField, document[mField.name]));
     }
 
     /**
@@ -118,9 +130,9 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise object created after the insertion.
      */
     function insertOne(document) {
-        return isValidDocument(document) && assert.isPopulatedObject(document)
+        return assert.isPopulatedObject(document) && isValidDocument(document)
             ? processAction(db => db.collection(collectionName).insertOne(document))
-            : Promise.reject('insertOne: Document must be an object');
+            : Promise.reject('insertOne: Document must be an object that matches the model');
     }
 
     /**
@@ -131,9 +143,9 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise object created after the insertions.
      */
     function insertMany(documents) {
-        return assert.arePopulatedObjects(documents)
+        return assert.arePopulatedObjects(documents) && documents.every(isValidDocument)
             ? processAction(db => db.collection(collectionName).insertMany(documents))
-            : Promise.reject('insertMany: All documents in the array must be objects.');
+            : Promise.reject('insertMany: All documents in the array must be objects that match the model');
     }
 
     /**

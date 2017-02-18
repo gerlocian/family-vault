@@ -22,6 +22,7 @@ const runTests = (func, trueTests) => {
         manyValueArrayWithPopulatedObject: false,
         number: false,
         string: false,
+        blankString: false,
         boolean: false
     }, trueTests);
 
@@ -78,6 +79,10 @@ const runTests = (func, trueTests) => {
             expect(func('a')).to.equal(tests.string);
         });
 
+        it(`should return ${tests.blankString} for a blank or empty string`, () => {
+            expect(func('')).to.equal(tests.blankString);
+        });
+
         it(`should return ${tests.boolean} for a boolean`, () => {
             expect(func(true)).to.equal(tests.boolean);
         });
@@ -100,11 +105,18 @@ describe('isType', () => {
         expect(assert.isType('object', 1)).to.be.false;
         expect(assert.isType('string')('hello')).to.be.true;
         expect(assert.isType('string')(1)).to.be.false;
+        expect(assert.isType('array', {})).to.be.false;
+        expect(assert.isType('array', [])).to.be.true;
     });
 });
 
 runTests(assert.isUndefined, {
     noValue: true
+});
+
+runTests(assert.isEmpty, {
+    noValue: true,
+    blankString: true
 });
 
 runTests(assert.isObject, {

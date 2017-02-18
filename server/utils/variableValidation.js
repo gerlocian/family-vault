@@ -10,7 +10,7 @@ import curry from 'lodash/curry';
  * @param value { Any } The value to test against the type.
  * @return { boolean } Whether the value has the provided type.
  */
-export const isType = curry((type, value) => typeof value === type);
+export const isType = curry((type, value) => type === 'array' ? Array.isArray(value) : typeof value === type);
 
 /**
  * Deteremines if the provided value is undefined.
@@ -20,6 +20,19 @@ export const isType = curry((type, value) => typeof value === type);
  * @return { boolean } Whether or not the value is undefined.
  */
 export const isUndefined = value => isType('undefined', value);
+
+/**
+ * Determines if the provided value is a blank value (undefined, null or an empty string).
+ * isEmpty : Any -> Boolean
+ *
+ * @param value { Undefined, Null, or String } The value to test.
+ * @return { boolean } Whether or not the value is blank.
+ */
+export const isEmpty = value => {
+    return isUndefined(value)
+        ||  value === null
+        || (isType('string', value) && value.trim() === '');
+};
 
 /**
  * Determines if the provided value is an object.
