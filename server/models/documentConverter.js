@@ -13,6 +13,16 @@ import {isPopulatedObject, isType, isEmpty, isUndefined} from './../utils/variab
  * @return { Object } The newly converted document from the object.
  */
 const convertDocument = curry((model, document) => {
+    let errors = [];
+    let newDocument = {};
+
+    if (! isType('array', model) || isEmpty(model)) {
+        errors = errors.concat(
+            {errorCode: 'c2bab087-b97c-42cf-935a-cc0cdced9d1e', errorMsg: 'Model is invalid'}
+        );
+    }
+
+    /*
     if (! isType('array', model) || isEmpty(model)) throw 'Model must be a populated object.';
     if (! isPopulatedObject(document)) throw 'Document must be a populated object';
 
@@ -33,6 +43,11 @@ const convertDocument = curry((model, document) => {
         doc[name] = document[name];
         return doc;
     }, {});
+    */
+
+    newDocument.errors = errors;
+
+    return newDocument;
 });
 
 export default convertDocument;
