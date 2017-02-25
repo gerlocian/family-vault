@@ -14,40 +14,60 @@ import {isPopulatedObject, isType, isEmpty, isUndefined} from './../utils/variab
  */
 const convertDocument = curry((model, document) => {
     let errors = [];
-    let newDocument = {};
+    let conversion = {};
 
-    if (! isType('array', model) || isEmpty(model)) {
-        errors = errors.concat(
-            {errorCode: 'c2bab087-b97c-42cf-935a-cc0cdced9d1e', errorMsg: 'Model is invalid'}
-        );
-    }
+    if (! isType('array', model) || isEmpty(model))
+        errors = errors.concat({
+            errorCode: 'c2bab087-b97c-42cf-935a-cc0cdced9d1e',
+            errorMsg: 'Model is invalid.'
+        });
 
-    /*
-    if (! isType('array', model) || isEmpty(model)) throw 'Model must be a populated object.';
-    if (! isPopulatedObject(document)) throw 'Document must be a populated object';
+    if (! isPopulatedObject(document))
+        errors = errors.concat({
+            errorCode: '3fea2875-e462-4842-a3f6-09cb1677a493',
+            errorMsg: 'Provided document has no fields.'
+        });
 
-    model.filter(({required}) => required).forEach(({name}) => {
-        if (isEmpty(document[name]))
-            throw `Field '${name}' is not defined on the document and is required`;
+    model.forEach(({name, type, required}) => {
+        const fieldValue = document[name];
+
+        if (required && isEmpty(fieldValue)) {
+            errors = errors.concat({
+                errorCode: '2097cce8-f4c3-4173-9553-1b9a55248f3f',
+                errorMsg: 'Field is not defined on the document and is required.',
+                errorField: name
+            });
+        }
+
+        if (! isType(type, fieldValue) && ! isUndefined(fieldValue)) {
+            errors = errors.concat({
+                errorCode: '56fc8804-3c94-434d-8e51-367680177f04',
+                errorMsg: 'Field does not have valid input.',
+                errorField: name,
+                expectedType: type,
+                providedType: typeof fieldValue
+            });
+        }
+
+        if (isEmpty(fieldValue) && ! isUndefined(fieldValue)) {
+            errors = errors.concat({
+                errorCode: 'e12af28f-42c7-4bf1-a2f1-18306735f952',
+                errorMsg: 'Field may not contain an empty string or array.',
+                errorField: name
+            });
+        }
     });
 
-    model.forEach(({name, type}) => {
-        if (!isType(type, document[name]) && !isUndefined(document[name]))
-            throw `Field '${name}' is not the correct type. Defined in model as ${type}`;
+    // if (isEmpty(errors)) {
+    //     conversion.document = model.reduce((d, {name}) => {
+    //         d[name] = document[name];
+    //         return d;
+    //     });
+    // }
 
-        if (isEmpty(document[name]) && !isUndefined(document[name]))
-            throw `Field '${name}' is an empty value.`;
-    });
+    conversion.errors = errors;
 
-    return model.reduce((doc, {name}) => {
-        doc[name] = document[name];
-        return doc;
-    }, {});
-    */
-
-    newDocument.errors = errors;
-
-    return newDocument;
+    return conversion;
 });
 
 export default convertDocument;
