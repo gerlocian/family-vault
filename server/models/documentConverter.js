@@ -16,17 +16,19 @@ const convertDocument = curry((model, document) => {
     let errors = [];
     let conversion = {};
 
-    if (! isType('array', model) || isEmpty(model))
+    if (! isType('array', model) || isEmpty(model)) {
         errors = errors.concat({
             errorCode: 'c2bab087-b97c-42cf-935a-cc0cdced9d1e',
             errorMsg: 'Model is invalid.'
         });
+    }
 
-    if (! isPopulatedObject(document))
+    if (! isPopulatedObject(document)) {
         errors = errors.concat({
             errorCode: '3fea2875-e462-4842-a3f6-09cb1677a493',
             errorMsg: 'Provided document has no fields.'
         });
+    }
 
     model.forEach(({name, type, required}) => {
         const fieldValue = document[name];
@@ -58,12 +60,12 @@ const convertDocument = curry((model, document) => {
         }
     });
 
-    // if (isEmpty(errors)) {
-    //     conversion.document = model.reduce((d, {name}) => {
-    //         d[name] = document[name];
-    //         return d;
-    //     });
-    // }
+    if (isEmpty(errors)) {
+        conversion.document = model.reduce((d, {name}) => {
+            d[name] = document[name];
+            return d;
+        }, {});
+    }
 
     conversion.errors = errors;
 

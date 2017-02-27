@@ -1,6 +1,6 @@
 [
   {
-    "name": "type",
+    "name": "fieldtype",
     "type": "string",
     "required": true,
     "description": "A test field. Type"
