@@ -65,9 +65,9 @@ const convertDocument = curry((model, document) => {
             d[name] = document[name];
             return d;
         }, {});
+    } else {
+        conversion.errors = errors;
     }
-
-    conversion.errors = errors;
 
     return conversion;
 });
