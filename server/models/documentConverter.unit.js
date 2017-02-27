@@ -66,8 +66,8 @@ describe('convertDocument', () => {
             providedType: 'number'
         });
 
-        expect(convertDocument(model, {id: 1, fieldtype: 'type1', name: undefined}).errors).not.to.exist;
-        expect(convertDocument(model, {id: 1, fieldtype: 'type1', name: 'Patrick'}).errors).not.to.exist;
+        expect(convertDocument(model, {id: 1, fieldtype: 'type1', name: undefined}).errors).to.have.length(0);
+        expect(convertDocument(model, {id: 1, fieldtype: 'type1', name: 'Patrick'}).errors).to.have.length(0);
     });
 
     it('should provide an error for fields that are empty', () => {
@@ -80,7 +80,7 @@ describe('convertDocument', () => {
 
     it('should return an object when both model and document are correct provided', () => {
         const result = convertDocument(model, {id: 1, fieldtype: 'type1'});
-        expect(result.errors).not.to.exist;
+        expect(result.errors).to.have.length(0);
         expect(result.document).to.be.a('object');
     });
 
@@ -90,6 +90,6 @@ describe('convertDocument', () => {
         expect(results.document).to.have.property('fieldtype', 'type1');
         expect(results.document).to.have.property('name', 'Patrick');
         expect(results.document).not.to.have.property('extra');
-        expect(results.errors).not.to.exist;
+        expect(results.errors).to.have.length(0);
     });
 });

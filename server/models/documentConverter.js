@@ -9,7 +9,6 @@ import {isPopulatedObject, isType, isEmpty, isUndefined} from './../utils/variab
  *
  * @param model { Array } The model used to validate and convert the object into the document.
  * @param document { Object } The object to convert into the document.
- * @throws if any of the fields in the document do not conform to the requirements of the model.
  * @return { Object } The newly converted document from the object.
  */
 const convertDocument = curry((model, document) => {
@@ -66,8 +65,10 @@ const convertDocument = curry((model, document) => {
             return d;
         }, {});
     } else {
-        conversion.errors = errors;
+        conversion.document = {};
     }
+
+    conversion.errors = errors;
 
     return conversion;
 });
