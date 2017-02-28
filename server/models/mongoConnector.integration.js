@@ -5,26 +5,13 @@ import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
 import MongoConnector from './mongoConnector';
 import { MongoClient } from 'mongodb';
+import model from './test.model.json';
 
 chai.use(chaiAsPromised);
 
-xdescribe('MongoConnector', () => {
+describe('MongoConnector', () => {
     const testUrl = 'mongodb://localhost:27017/testdatabase';
     const testCollection = 'testcollection';
-    const model = [
-        {
-            name: 'type',
-            description: 'a test field',
-            type: 'string',
-            required: true
-        },
-        {
-            name: 'id',
-            description: 'another test field',
-            type: 'number',
-            required: false
-        }
-    ];
 
     let mongoConnector;
     let database;
@@ -35,15 +22,15 @@ xdescribe('MongoConnector', () => {
         return MongoClient.connect(testUrl).then(db => {
             database = db;
             return db.collection(testCollection).insertMany([
-                { id: 1, type: 'type1' },
-                { id: 2, type: 'type1' },
-                { id: 3, type: 'type1' },
-                { id: 4, type: 'type2' },
-                { id: 5, type: 'type2' },
-                { id: 6, type: 'type2' },
-                { id: 7, type: 'type3' },
-                { id: 8, type: 'type3' },
-                { id: 9, type: 'type3' },
+                { id: 1, fieldtype: 'type1' },
+                { id: 2, fieldtype: 'type1' },
+                { id: 3, fieldtype: 'type1' },
+                { id: 4, fieldtype: 'type2' },
+                { id: 5, fieldtype: 'type2' },
+                { id: 6, fieldtype: 'type2' },
+                { id: 7, fieldtype: 'type3' },
+                { id: 8, fieldtype: 'type3' },
+                { id: 9, fieldtype: 'type3' },
             ]);
         });
     });
@@ -98,7 +85,7 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should find the appropriate documents with a query', (done) => {
-            expect(mongoConnector.count({ type: 'type1' })).to.eventually.equal(3).notify(done);
+            expect(mongoConnector.count({ fieldtype: 'type1' })).to.eventually.equal(3).notify(done);
         });
     });
 
@@ -128,14 +115,14 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should test that the document fields are all there and the correct types', (done) => {
-            expect(mongoConnector.insertOne({ type: 1 })).to.be.rejected.notify(done);
+            expect(mongoConnector.insertOne({ fieldtype: 1 })).to.be.rejected.notify(done);
         });
 
         it('should insert a document into the database', (done) => {
-            mongoConnector.insertOne({ id: 11, type: 'type1' }).then(() => {
+            mongoConnector.insertOne({ id: 11, fieldtype: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(10).notify(done);
-            }).catch(err => done(new Error(err)));
+            }).catch(err => { console.log(err); done(new Error(err)); });
         });
     });
 
@@ -162,8 +149,8 @@ xdescribe('MongoConnector', () => {
 
         it('should reject if given an array with non-objects', (done) => {
             const docs = [
-                { id: 10, type: 'type1' },
-                { id: 11, type: 'type1' },
+                { id: 10, fieldtype: 'type1' },
+                { id: 11, fieldtype: 'type1' },
                 'string'
             ];
             expect(mongoConnector.insertMany(docs)).to.be.rejected.notify(done);
@@ -181,15 +168,15 @@ xdescribe('MongoConnector', () => {
 
         it('should test that the document fields are all there and the correct types', (done) => {
             expect(mongoConnector.insertMany([
-                { type: 1 }, { type: true }, { type: 'hello' }
+                { fieldtype: 1 }, { fieldtype: true }, { fieldtype: 'hello' }
             ])).to.be.rejected.notify(done);
         });
 
         it('should insert many records into the database', (done) => {
             mongoConnector.insertMany([
-                { id: 10, type: 'type1' },
-                { id: 11, type: 'type1' },
-                { id: 12, type: 'type1' }
+                { id: 10, fieldtype: 'type1' },
+                { id: 11, fieldtype: 'type1' },
+                { id: 12, fieldtype: 'type1' }
             ]).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(12).notify(done);
@@ -219,7 +206,7 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should delete the appropriate documents with a query', (done) => {
-            mongoConnector.deleteMany({ type: 'type1' }).then(() => {
+            mongoConnector.deleteMany({ fieldtype: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(6).notify(done);
             });
@@ -248,7 +235,7 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should delete the appropriate documents with a query', (done) => {
-            mongoConnector.deleteOne({ type: 'type1' }).then(() => {
+            mongoConnector.deleteOne({ fieldtype: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(8).notify(done);
             });
@@ -277,7 +264,7 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should find the appropriate documents with a query', (done) => {
-            expect(mongoConnector.find({ type: 'type1' })).to.eventually.have.length(3).notify(done);
+            expect(mongoConnector.find({ fieldtype: 'type1' })).to.eventually.have.length(3).notify(done);
         });
     });
 
@@ -303,7 +290,7 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should find the appropriate documents with a query', (done) => {
-            expect(mongoConnector.findOne({ type: 'type1' }))
+            expect(mongoConnector.findOne({ fieldtype: 'type1' }))
                 .to.eventually.have.property('id', 1).notify(done);
         });
     });
@@ -350,15 +337,15 @@ xdescribe('MongoConnector', () => {
         });
 
         it('should test that the document fields are all there and the correct types', (done) => {
-            expect(mongoConnector.replaceOne({}, { type: 1 })).to.be.rejected.notify(done);
+            expect(mongoConnector.replaceOne({}, { fieldtype: 1 })).to.be.rejected.notify(done);
         });
 
         it('should replace the found document with a new document', (done) => {
-            const newDocument = { id: 1, type: 'type4', randomField: Math.random() };
+            const newDocument = { id: 1, fieldtype: 'type4' };
 
             mongoConnector.replaceOne({ id: 1 }, newDocument).then(() => {
-                expect(database.collection(testCollection).findOne({ id: 'x' }))
-                    .to.eventually.have.property('randomField', newDocument.randomField).notify(done);
+                const test = database.collection(testCollection).findOne({ id: 1 });
+                expect(test).to.eventually.have.property('fieldtype', 'type4').notify(done);
             });
         });
     });

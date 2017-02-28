@@ -29,35 +29,37 @@ const convertDocument = curry((model, document) => {
         });
     }
 
-    model.forEach(({name, type, required}) => {
-        const fieldValue = document[name];
+    if (isPopulatedObject(document)) {
+        model.forEach(({name, type, required}) => {
+            const fieldValue = document[name];
 
-        if (required && isEmpty(fieldValue)) {
-            errors = errors.concat({
-                errorCode: '2097cce8-f4c3-4173-9553-1b9a55248f3f',
-                errorMsg: 'Field is not defined on the document and is required.',
-                errorField: name
-            });
-        }
+            if (required && isEmpty(fieldValue)) {
+                errors = errors.concat({
+                    errorCode: '2097cce8-f4c3-4173-9553-1b9a55248f3f',
+                    errorMsg: 'Field is not defined on the document and is required.',
+                    errorField: name
+                });
+            }
 
-        if (! isType(type, fieldValue) && ! isUndefined(fieldValue)) {
-            errors = errors.concat({
-                errorCode: '56fc8804-3c94-434d-8e51-367680177f04',
-                errorMsg: 'Field does not have valid input.',
-                errorField: name,
-                expectedType: type,
-                providedType: typeof fieldValue
-            });
-        }
+            if (!isType(type, fieldValue) && !isUndefined(fieldValue)) {
+                errors = errors.concat({
+                    errorCode: '56fc8804-3c94-434d-8e51-367680177f04',
+                    errorMsg: 'Field does not have valid input.',
+                    errorField: name,
+                    expectedType: type,
+                    providedType: typeof fieldValue
+                });
+            }
 
-        if (isEmpty(fieldValue) && ! isUndefined(fieldValue)) {
-            errors = errors.concat({
-                errorCode: 'e12af28f-42c7-4bf1-a2f1-18306735f952',
-                errorMsg: 'Field may not contain an empty string or array.',
-                errorField: name
-            });
-        }
-    });
+            if (isEmpty(fieldValue) && !isUndefined(fieldValue)) {
+                errors = errors.concat({
+                    errorCode: 'e12af28f-42c7-4bf1-a2f1-18306735f952',
+                    errorMsg: 'Field may not contain an empty string or array.',
+                    errorField: name
+                });
+            }
+        });
+    }
 
     if (isEmpty(errors)) {
         conversion.document = model.reduce((d, {name}) => {

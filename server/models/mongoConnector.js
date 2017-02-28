@@ -1,6 +1,7 @@
 'use strict';
 
 import curry from 'lodash/curry';
+import documentConverter from './documentConverter';
 import * as assert from './../utils/variableValidation';
 
 /**
@@ -12,6 +13,15 @@ import * as assert from './../utils/variableValidation';
  * @returns { Object } The model object.
  */
 function MongoConnector(client, url, collectionName, model) {
+
+    /**
+     * Processes the document and makes sure that it conforms to the given mode.
+     * normalizeDocument : Object -> Object
+     *
+     * @param document { Object } The document object to normalize.
+     * @return { Object } An object containing either the normalized document, or errors.
+     */
+    const normalizeDocument = documentConverter(model);
 
     /**
      * Processes actions against the model.
@@ -30,31 +40,6 @@ function MongoConnector(client, url, collectionName, model) {
             p.db.close();
             return p.result;
         });
-    }
-
-    /**
-     * Validates a particular field against the model for that field.
-     * isValidField : Object => Object => Boolean
-     *
-     * @param model { Deconstructed: { name, type, required }} The field from the model to use as basis for testing.
-     * @param field { Object } The field to test for validity.
-     * @return { Boolean } The result of the test {true or false}.
-     */
-    function isValidField({type, required}, field) {
-        return (assert.isUndefined(field) || assert.isType(type, field))
-            && ! (required && assert.isEmpty(field));
-    }
-
-    /**
-     * Validates the provided document against the model given to the factory.
-     * validateDocument : Model => Document => Boolean
-     *
-     * @param document { Object } The document to test.
-     * @return { Boolean } The result of the test (true or false).
-     */
-    function isValidDocument(document) {
-        if (! model) throw Error('Connector factory was not provided a model.');
-        return model.every(mField => isValidField(mField, document[mField.name]));
     }
 
     /**
@@ -130,13 +115,12 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise object created after the insertion.
      */
     function insertOne(document) {
-        if (! assert.isPopulatedObject(document))
-            return Promise.reject('insertOne: Document is not a populated object.');
+        const nDocument = normalizeDocument(document);
 
-        if (! isValidDocument(document))
-            return Promise.reject('insertOne: The document is not in the correct form.');
+        if (nDocument.errors.length > 0)
+            return Promise.reject(nDocument);
 
-        return processAction(db => db.collection(collectionName).insertOne(document));
+        return processAction(db => db.collection(collectionName).insertOne(nDocument.document));
     }
 
     /**
@@ -150,8 +134,10 @@ function MongoConnector(client, url, collectionName, model) {
         if (! assert.arePopulatedObjects(documents))
             return Promise.reject('insertMany: All documents in the array must be populated objects');
 
-        if (! documents.every(isValidDocument))
-            return Promise.reject('insertMany: Not all documents match the model');
+        const nDocuments = documents.map(doc => normalizeDocument(doc));
+
+        if (nDocuments.some(doc => doc.errors.length > 0))
+            return Promise.reject(nDocuments);
 
         return processAction(db => db.collection(collectionName).insertMany(documents));
     }
@@ -165,11 +151,10 @@ function MongoConnector(client, url, collectionName, model) {
      * @return { Promise } The promise created for this transaction.
      */
     function replaceOne(query, document) {
-        if (! assert.isPopulatedObject(query) || ! assert.isPopulatedObject(document))
-            return Promise.reject('replaceOne: Query or document not a populated object');
+        const nDocument = normalizeDocument(document);
 
-        if (! isValidDocument(document))
-            return Promise.reject('replaceOne: Document does not match the model');
+        if (nDocument.errors.length > 0)
+            return Promise.reject(nDocument);
 
         return processAction(db => db.collection(collectionName).replaceOne(query, document));
     }
