@@ -10,7 +10,9 @@ import curry from 'lodash/curry';
  * @param value { Any } The value to test against the type.
  * @return { boolean } Whether the value has the provided type.
  */
-export const isType = curry((type, value) => type === 'array' ? Array.isArray(value) : typeof value === type);
+export const isType = curry(
+    (type, value) => type === 'array' ? Array.isArray(value) : typeof value === type
+);
 
 /**
  * Deteremines if the provided value is undefined.
