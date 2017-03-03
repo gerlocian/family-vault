@@ -122,7 +122,7 @@ describe('MongoConnector', () => {
             mongoConnector.insertOne({ id: 11, fieldtype: 'type1' }).then(() => {
                 expect(database.collection(testCollection).count({}))
                     .to.eventually.equal(10).notify(done);
-            }).catch(err => { console.log(err); done(new Error(err)); });
+            }).catch(err => { done(new Error(err)); });
         });
     });
 

@@ -1,0 +1,112 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Family Vault",
+		"_postman_id": "67990d48-e33d-cb8e-929c-c791f0966a6f",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Book API",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all books",
+					"request": {
+						"url": "http://localhost:3000/api/books",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "All the books in the collection."
+					},
+					"response": []
+				},
+				{
+					"name": "Get book by id",
+					"request": {
+						"url": "http://localhost:3000/api/books/12345",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "A specified book identified by \":id\"."
+					},
+					"response": []
+				},
+				{
+					"name": "Create book",
+					"request": {
+						"url": "http://localhost:3000/api/books",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": "Create a new book."
+					},
+					"response": []
+				},
+				{
+					"name": "Update book",
+					"request": {
+						"url": "http://localhost:3000/api/books/58b9dd9aa5795808626553bb",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Goodbye World! Part 2\",\n  \"author\": \"Patrick Ortiz\",\n  \"description\": \"A second new book\"\n}"
+						},
+						"description": "Update specified book identified by \":id\"."
+					},
+					"response": []
+				},
+				{
+					"name": "Patch book",
+					"request": {
+						"url": "http://localhost:3000/api/books/58b9dd9aa5795808626553bb",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Goodbye World! Part 2\",\n  \"author\": \"Patrick Ortiz\",\n  \"description\": \"A second new book\"\n}"
+						},
+						"description": "Patchspecified book identified by \":id\"."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete book",
+					"request": {
+						"url": "http://localhost:3000/api/books/58b9de3b0776c8088bf1bab5",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": "Delete specified book identified by \":id\"."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "http://localhost:3000",
+			"request": {
+				"url": "http://localhost:3000",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "URL for the main page of Family Vault."
+			},
+			"response": []
+		}
+	]
+}

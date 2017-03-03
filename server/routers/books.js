@@ -3,10 +3,10 @@
 /*
     TODO:
 
-    GET	    /books          find(query)
-    GET	    /books/:id      findOne(query)
-    POST	/books          insertOne(<document>)
-    PUT	    /books/:id      updateOne(<query>, <document>)
-    PATCH	/books/:id      updateOne(<query>, <update>)
-    DELETE	/books/:id      deleteOne(<query>)
+    x GET	    /books          find(query)
+    x GET	    /books/:id      findOne(query)
+    x POST	    /books          insertOne(<document>)
+    x PUT	    /books/:id      replaceOne(<query:id>, <document>)
+      PATCH	    /books/:id      updateOne(<query>, <update>)
+    x DELETE	/books/:id      deleteOne(<query:id>)
  */

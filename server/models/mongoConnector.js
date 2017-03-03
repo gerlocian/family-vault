@@ -156,8 +156,10 @@ function MongoConnector(client, url, collectionName, model) {
         if (nDocument.errors.length > 0)
             return Promise.reject(nDocument);
 
-        return processAction(db => db.collection(collectionName).replaceOne(query, document));
+        return processAction(db => db.collection(collectionName).replaceOne(query, nDocument.document));
     }
+
+    /* TODO: Add updateOne method to make PATCH requests easier */
 
     return {
         count,
