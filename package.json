@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "npm run test:security",
     "start": "babel-node server/server.js",
-    "start:dev": "LOGGER_LEVEL=debug npm run start -s",
+    "start:dev": "npm run start -s -- --development",
     "test": "npm-run-all --parallel test:security test:unit test:lint",
     "test:lint": "esw server/**/*.js --color",
     "test:lint:watch": "npm run test:lint -- --watch",
@@ -43,7 +43,8 @@
     "mongodb": "^2.2.22",
     "morgan": "^1.8.0",
     "npm-run-all": "^4.0.1",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "yargs": "^7.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
