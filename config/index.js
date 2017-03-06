@@ -1,8 +1,6 @@
 'use strict';
 
-import { argv } from 'yargs';
-
-if (argv.development) process.env.LOGGER_LEVEL = 'debug';
+if (process.argv.includes('--development')) process.env.LOGGER_LEVEL = 'debug';
 
 export const SERVER_PORT = process.env.SERVER_PORT || 3000;
 export const LOGGER_LEVEL = process.env.LOGGER_LEVEL || 'info';
