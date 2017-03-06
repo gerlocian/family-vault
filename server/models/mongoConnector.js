@@ -83,6 +83,20 @@ function MongoConnector(client, url, collectionName, model) {
     }
 
     /**
+     * Finds the first instance of a document that matches the provided document id. This document
+     * id is the one assigned to the document by the mongo system.
+     * findOneById : String -> Promise
+     *
+     * @param id { String } The document id to use for the query.
+     * @return { Promise } The promise object created for the document found.
+     */
+    function deleteOneById(id) {
+        return assert.isType('string', id)
+            ? processAction(db => db.collection(collectionName).deleteOne({ _id: new ObjectID(id) }))
+            : Promise.reject('deleteOneById: You must provide a valid id string.');
+    }
+
+    /**
      * Finds any number of documents that match a given query.
      * find : Object -> Promise
      *
@@ -180,6 +194,7 @@ function MongoConnector(client, url, collectionName, model) {
         count,
         deleteMany,
         deleteOne,
+        deleteOneById,
         find,
         findOne,
         findOneById,

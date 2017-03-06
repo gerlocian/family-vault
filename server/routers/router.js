@@ -1,7 +1,6 @@
 'use strict';
 
 import curry from 'lodash/curry';
-import { ObjectID } from 'mongodb';
 
 const route = curry((router, connector) => {
     router.get('/', (req, res) => {
@@ -11,7 +10,7 @@ const route = curry((router, connector) => {
     });
 
     router.get('/:id', (req, res) => {
-        connector.findOne({ _id: new ObjectID(req.params.id) })
+        connector.findOneById(req.params.id)
             .then(document => {
                 if (!document) {
                     res.status(404).send('404 Not Found');
