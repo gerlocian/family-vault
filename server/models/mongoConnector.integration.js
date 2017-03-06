@@ -295,6 +295,35 @@ describe('MongoConnector', () => {
         });
     });
 
+    describe('findOneById', () => {
+        it('should exist', () => {
+            expect(mongoConnector.findOneById).to.be.a('function');
+        });
+
+        it('should reject if given an object', (done) => {
+            expect(mongoConnector.findOneById({ id: 1 })).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given an array', (done) => {
+            expect(mongoConnector.findOneById([ 1 ])).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a number', (done) => {
+            expect(mongoConnector.findOneById(1)).to.be.rejected.notify(done);
+        });
+
+        it('should reject if given a boolean', (done) => {
+            expect(mongoConnector.findOneById(true)).to.be.rejected.notify(done);
+        });
+
+        it('should find the appropriate document when given a valid id value', (done) => {
+            database.collection(testCollection).findOne({ fieldtype: 'type1' }).then(doc => {
+                expect(mongoConnector.findOneById(doc._id.toString()))
+                    .to.eventually.deep.equal(doc).notify(done);
+            });
+        });
+    });
+
     describe('replaceOne', () => {
         it('should exist', () => {
             expect(mongoConnector.replaceOne).to.be.a('function');

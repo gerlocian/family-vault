@@ -3,6 +3,7 @@
 import curry from 'lodash/curry';
 import documentConverter from './documentConverter';
 import * as assert from './../utils/variableValidation';
+import { ObjectID } from 'mongodb';
 
 /**
  * An abstract class for any data models in the system.
@@ -108,6 +109,20 @@ function MongoConnector(client, url, collectionName, model) {
     }
 
     /**
+     * Finds the first instance of a document that matches the provided document id. This document
+     * id is the one assigned to the document by the mongo system.
+     * findOneById : String -> Promise
+     *
+     * @param id { String } The document id to use for the query.
+     * @return { Promise } The promise object created for the document found.
+     */
+    function findOneById(id) {
+        return assert.isType('string', id)
+            ? processAction(db => db.collection(collectionName).findOne({ _id: new ObjectID(id) }))
+            : Promise.reject('findOneById: You must provide a valid id string.');
+    }
+
+    /**
      * Inserts a document into the collection.
      * insertOne : Object -> Promise
      *
@@ -167,6 +182,7 @@ function MongoConnector(client, url, collectionName, model) {
         deleteOne,
         find,
         findOne,
+        findOneById,
         insertOne,
         insertMany,
         replaceOne
