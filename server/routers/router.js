@@ -1,6 +1,7 @@
 'use strict';
 
 import curry from 'lodash/curry';
+import { ObjectID } from 'mongodb';
 
 const route = curry((router, connector) => {
     router.get('/', (req, res) => {
