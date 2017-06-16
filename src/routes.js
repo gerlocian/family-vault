@@ -1,14 +1,16 @@
 'use strict';
 
 import React from 'react';
-import {Route, IndexRoute} from 'react-router-dom';
 import App from './components/app.component';
 import HomePage from './components/pages/home/home.page';
 import AboutPage from './components/pages/about/about.page';
+import {Route} from 'react-router-dom';
 
-export default (
-    <Route path="/" component={App}>
-        <IndexRoute component={HomePage}/>
+const Routes = (props) => (
+    <App>
+        <Route path="/" component={HomePage}/>
         <Route path="about" component={AboutPage}/>
-    </Route>
+    </App>
 );
+
+export default Routes;
