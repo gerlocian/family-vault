@@ -8,8 +8,8 @@ import {Route} from 'react-router-dom';
 
 const Routes = (props) => (
     <App>
-        <Route path="/" component={HomePage}/>
-        <Route path="about" component={AboutPage}/>
+        <Route exact path="/" component={HomePage}/>
+        <Route exact path="/about" component={AboutPage}/>
     </App>
 );
 
